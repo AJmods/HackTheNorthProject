@@ -6,26 +6,44 @@ app = Flask(__name__)
 def hello_world():  # put application's code here
     return 'Hello World!'
 
+class Job:
+
+    def __init__(self):
+        pass
+    def to_dict(self):
+        self.rank = 1
+        self.title = 'chef'
+        self.company = 'lazees'
+        self.description = "good shit (litterly)"
+        self.pay = 9.99
+        self.location = 'Waterloo, ON'
+        self.apply = 'dont'
+
+        return {
+            'rank' : self.rank,
+            'title' : self.title,
+            'company' : self.company,
+            'description' : self.description,
+            'pay' : self.pay,
+            'location' : self.location,
+            'apply' : self.apply
+        }
 @app.route('/jobs')
 def getJobData():
     return render_template("JobTable.html")
 
 @app.route('/api/data/jobs')
 def jobData():
-    descs = []
+    descs = [Job() for x in range(10)]
     # response
-    return {
-        'data' : [{'rank': 1,
-          'title': "Job McJob face",
-            'company': 'Lazees',
-            'description': "good shit (litterly)",
-            'pay': 'garlic',
-            'location': 'waterloo, ON',
-            'apply': 'dont'}],
+    ret = {
+        'data' : [job.to_dict() for job in descs],
         'recordsFiltered': 0,
         'recordsTotal': 0,
         'draw': 0
     }
+    print (ret)
+    return ret
 
 def rankdata():
     pass
