@@ -1,25 +1,20 @@
-from serpapi import GoogleSearch
-import os
+import json
 
-print (os.environ)
+def processJobs():
 
-def queryJobs(job_title, location, page):
-    params = {
-        "q" : job_title,
-        "location" : location,
-        "engine" : "google_jobs",
-        "api_key" : os.environ['SERP_API_KEY'],
-        "start" : page * 10 # pages counted in multiples of 10
-    }
+    # load jobs directly from file
+    jobdump = json.loads(open("jobdump.json").read())
 
-    search = GoogleSearch(params)
-    return search.get_dict()
+    for job in jobdump:
+        
+        # sample data
+        print(f"{job['title']} at {job['company_name']} ({'location'})")
+        print(f"icon: {job['thumbnail']}")
+        print(job['description']) # pass this into cohere
+        
+        for key, value in job['detected_extensions']:
+            print(f"{key}: {value}")
 
-def processJobs(jobs_dict):
-    for job in jobs_dict["jobs_results"]:
-        print(f"{job['description']}") # feed this to cohere
-        # print(f"{job['title']} at {job['company_name']} ({job['location']})")
-        # job["thumbnail"] is available - can this be used for frontend?
+        pass
 
-jobs_dict = queryJobs("Internship", "Waterloo", 0)
-processJobs(jobs_dict)
+processJobs()

@@ -10,6 +10,13 @@
 {#</form>#}
 {#{% endblock %}#}
 
+   {% block form %}
+<form action="#" method="POST">
+    <input type="text" name="pos" placeholder="Positive Phrases (sep by commas)" value=""{{posP if posP}}/>
+    <input type ="text" name = "expr" placeholder="Negative Phrases (sep by commas)" value="" {{negP if negP}}/>
+    <input type="submit" value="submit"/>
+</form>
+{% endblock %}
 
 {% block content %}
   <table id="data" class="table table-striped">
@@ -48,13 +55,6 @@
       });
     });
   </script>
-{% endblock %}
-    {% block form %}
-<form action="#" method="POST">
-    <input type="text" name="pos" placeholder="Positive Phrases (sep by commas)" value=""{{posP if posP}}/>
-    <input type ="text" name = "expr" placeholder="Negative Phrases (sep by commas)" value="" {{negP if negP}}/>
-    <input type="submit" value="submit"/>
-</form>
 {% endblock %}
 
 
