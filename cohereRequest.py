@@ -4,6 +4,7 @@ import math
 import numpy as np
 import re
 import os
+import sklearn
 from sklearn.metrics import pairwise_distances
 
 posPhrases = ["flexible hours", "remote"]
@@ -15,6 +16,7 @@ def process(description, posPhrases, negPhrases, mode="cosine"):
     #co = cohere.Client(os.environ['COHERE_API_KEY'])
     co = cohere.Client('E21STtXiw4cPKhx3a42WLxAllQ9hyT1ZwPtL5qok')
     descList = [description]
+    #print(descList)
     #print(descList)
     descResponse = co.embed(descList)
 
@@ -31,7 +33,7 @@ def process(description, posPhrases, negPhrases, mode="cosine"):
             #if(select == "extreme" and curScore < minScore):
                 #minScore = curScore
             #else:
-        goodScore += curScore
+        goodScore = np.sum(curScore)
         #if(select == "extreme"):
             #goodScores.append(minScore)
         #else:
@@ -45,7 +47,7 @@ def process(description, posPhrases, negPhrases, mode="cosine"):
         else:
             curScore = sklearn.metrics.pairwise.cosine_distances(negResponse.embeddings, descResponse.embeddings)
 
-        badScore += curScore
+        badScore = np.sum(curScore)
     badScore= badScore/(float)(len(negPhrases))
 
     #print(goodScores)
@@ -57,4 +59,4 @@ def process(description, posPhrases, negPhrases, mode="cosine"):
     
 
 #n
-print(process(description, posPhrases, negPhrases, "euclidean"))
+print(process(description, posPhrases, negPhrases))
