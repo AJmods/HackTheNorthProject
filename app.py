@@ -81,9 +81,9 @@ def getJobData():
         print(negativeWords)
         for i in range(0, 10): # len(jobs)
             print(i)
-            _, cnt = process(jobs[i].description, positiveWords, negativeWords)
-            jobs[i].rank = cnt
-            print(cnt)
+            cnt = process(jobs[i].description, positiveWords, negativeWords)
+            jobs[i].rank = cnt * 10 # make it look better
+            print("CNT:" + str(cnt))
        # print(request)
     return render_template("JobTable.html")
 
