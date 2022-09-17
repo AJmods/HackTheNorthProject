@@ -15,10 +15,16 @@ def jobData():
     descs = []
     # response
     return {
-        'data': [],
+        'data' : [{'rank': 1,
+          'title': "Job McJob face",
+            'company': 'Lazees',
+            'description': "good shit (litterly)",
+            'pay': 'garlic',
+            'location': 'waterloo, ON',
+            'apply': 'dont'}],
         'recordsFiltered': 0,
         'recordsTotal': 0,
-        'draw': 0,
+        'draw': 0
     }
 
 def rankdata():
