@@ -2,15 +2,16 @@ import cohere
 import json
 import math
 import numpy as np
-from cohere.classify import Example
 import re
-posPhrases = ["flexible hours"]
-negPhrases = ["stressful environment"]
+import os
 
-description = "You can work whenever you want.\nMust work under pressure \nOpportunities for promotion\nPython skills required.\n flexible hours. stressful environment"
+#posPhrases = ["flexible hours"]
+#negPhrases = ["stressful environment"]
+
+#description = "You can work whenever you want.\nMust work under pressure \nOpportunities for promotion\nPython skills required.\n flexible hours. stressful environment"
 
 def process(description, posPhrases, negPhrases, mode="euclidean"):
-    co = cohere.Client("E21STtXiw4cPKhx3a42WLxAllQ9hyT1ZwPtL5qok")
+    co = cohere.Client(os.environ['COHERE_API_KEY'])
     descList = re.split(r"(?<!^)\s*[.\n]+\s*(?!$)", description)
     print(descList)
     descResponse = co.embed(texts=descList)
@@ -27,9 +28,7 @@ def process(description, posPhrases, negPhrases, mode="euclidean"):
                 curScore = np.linalg.norm(np.array(posResponse.embeddings[j]) - np.array(descResponse.embeddings[i]))
             else:
                 curScore = np.dot(posResponse.embeddings[j], descResponse.embeddings[i])/(np.linalg.norm(posResponse.embeddings[j]) * np.linalg.norm(descResponse.embeddings[i]))
-    ##        lst = posResponse.embeddings[j]
-    ##        for k in range(len(lst)):
-    ##            curScore += (lst[k]-descResponse.embeddings[i][k])**2
+
             if(curScore > maxScore):
                 maxScore = curScore
 
@@ -44,16 +43,14 @@ def process(description, posPhrases, negPhrases, mode="euclidean"):
                 curScore = np.linalg.norm(np.array(negResponse.embeddings[j]) - np.array(descResponse.embeddings[i]))
             else:
                 curScore = np.dot(negResponse.embeddings[j], descResponse.embeddings[i])/(np.linalg.norm(negResponse.embeddings[j]) * np.linalg.norm(descResponse.embeddings[i]))
-    ##        lst = negResponse.embeddings[j]
-    ##        for k in range(len(lst)):
-    ##            curScore += (lst[k]-descResponse.embeddings[i][k])**2
+
             if(curScore > maxScore):
                 maxScore = curScore
 
         badScores.append(maxScore)
 
-    print(goodScores)
-    print(badScores)
+    #print(goodScores)
+    #print(badScores)
 
     totalScore = 0
 
@@ -82,4 +79,4 @@ def process(description, posPhrases, negPhrases, mode="euclidean"):
     return sentenceScores, totalScore
     
 
-print(process(description, posPhrases, negPhrases, "no"))
+#print(process(description, posPhrases, negPhrases, "no"))
