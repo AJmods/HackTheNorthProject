@@ -24,8 +24,7 @@ def classify(description):
     classes = []
     for i in response:
         classes.append(i.prediction)
-
-    print(classes)
+    #print(classes)
     return classes
 
 classify("competitive wages \n paid holidays \n no sick leave \n opportunity for promotion\n $20 hourly rate.Pizza party.Dynamic atmosphere")

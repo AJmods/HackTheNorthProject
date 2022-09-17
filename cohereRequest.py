@@ -10,54 +10,70 @@ import os
 
 #description = "You can work whenever you want.\nMust work under pressure \nOpportunities for promotion\nPython skills required.\n flexible hours. stressful environment"
 
-def process(description, posPhrases, negPhrases, mode="euclidean"):
-    co = cohere.Client(os.environ['COHERE_API_KEY'])
+def process(description, posPhrases, negPhrases, mode="euclidean", select="extreme"):
+    co = cohere.Client("E21STtXiw4cPKhx3a42WLxAllQ9hyT1ZwPtL5qok")
     descList = re.split(r"(?<!^)\s*[.\n]+\s*(?!$)", description)
-    print(descList)
+    #print(descList)
     descResponse = co.embed(texts=descList)
 
     posResponse = co.embed(texts=posPhrases)
     negResponse = co.embed(texts=negPhrases)
 
     goodScores = []
-
+    #all good/bad scores are disregarded besides extreme ones, limitation?
     for i in range(len(descList)):
-        maxScore = -1E9
+        if(select == "extreme"):
+            minScore = 1E9
+        else:
+            minScore = 0
         for j in range(len(posPhrases)):
             if (mode == "euclidean"):
                 curScore = np.linalg.norm(np.array(posResponse.embeddings[j]) - np.array(descResponse.embeddings[i]))
             else:
                 curScore = np.dot(posResponse.embeddings[j], descResponse.embeddings[i])/(np.linalg.norm(posResponse.embeddings[j]) * np.linalg.norm(descResponse.embeddings[i]))
 
-            if(curScore > maxScore):
-                maxScore = curScore
-
-        goodScores.append(maxScore)
+            if(select == "extreme" and curScore < minScore):
+                minScore = curScore
+            else:
+                minScore += curScore
+        if(select == "extreme"):
+            goodScores.append(minScore)
+        else:
+            goodScores.append(minScore/(float)(len(posPhrases)))
 
     badScores = []
 
     for i in range(len(descList)):
-        maxScore = -1E9
+        if(select == "extreme"):
+            minScore = 1E9
+        else:
+            minScore = 0
         for j in range(len(negPhrases)):
             if(mode=="euclidean"):
                 curScore = np.linalg.norm(np.array(negResponse.embeddings[j]) - np.array(descResponse.embeddings[i]))
             else:
                 curScore = np.dot(negResponse.embeddings[j], descResponse.embeddings[i])/(np.linalg.norm(negResponse.embeddings[j]) * np.linalg.norm(descResponse.embeddings[i]))
 
-            if(curScore > maxScore):
-                maxScore = curScore
+            if(select == "extreme" and curScore < minScore):
+                minScore = curScore
+            else:
+                minScore += curScore
+        if(select == "extreme"):
+            goodScores.append(minScore)
+        else:
+            goodScores.append(minScore/(float)(len(negPhrases)))
 
-        badScores.append(maxScore)
+        badScores.append(minScore)
 
-    #print(goodScores)
-    #print(badScores)
+    print(goodScores)
+    print(badScores)
 
     totalScore = 0
 
     sentenceScores = []
 
     for i in range(len(descList)):
-        if(mode=="euclidean"):
+        if(mode=="euclidean"): #change this system?
             if(goodScores[i] < badScores[i] and (goodScores[i] < 100)):
                 sentenceScores.append("good")
                 totalScore += 1
@@ -79,4 +95,4 @@ def process(description, posPhrases, negPhrases, mode="euclidean"):
     return sentenceScores, totalScore
     
 
-#print(process(description, posPhrases, negPhrases, "no"))
+print(process("Canada United States.Canada\nUnited", ["Canada"], ["United States"], "euclidean"))
