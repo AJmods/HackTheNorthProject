@@ -2,10 +2,12 @@ import json
 
 from flask import Flask
 from flask import render_template, request
+from flask_ngrok import run_with_ngrok
 
 from cohereRequest import process
 
 app = Flask(__name__)
+run_with_ngrok(app)
 
 positiveWords = []
 negativeWords = []
