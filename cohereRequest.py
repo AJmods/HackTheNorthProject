@@ -11,9 +11,10 @@ import os
 #description = "You can work whenever you want.\nMust work under pressure \nOpportunities for promotion\nPython skills required.\n flexible hours. stressful environment"
 
 def process(description, posPhrases, negPhrases, mode="euclidean"):
-    co = cohere.Client(os.environ['COHERE_API_KEY'])
+    #co = cohere.Client(os.environ['COHERE_API_KEY'])
+    co = cohere.Client('w9AvvvtW3mawGpvlCrm5FXxxnWBEsDOLkQpSSfCN')
     descList = re.split(r"(?<!^)\s*[.\n]+\s*(?!$)", description)
-    print(descList)
+    #print(descList)
     descResponse = co.embed(texts=descList)
 
     posResponse = co.embed(texts=posPhrases)
@@ -79,4 +80,5 @@ def process(description, posPhrases, negPhrases, mode="euclidean"):
     return sentenceScores, totalScore
     
 
-#print(process(description, posPhrases, negPhrases, "no"))
+#n
+# \(process(description, posPhrases, negPhrases, "no"))
