@@ -10,7 +10,9 @@ negPhrases = ["stressful environment"]
 description = "You can work whenever you want.\nMust work under pressure \nOpportunities for promotion\nPython skills required.\n flexible hours. stressful environment"
 
 def process(description, posPhrases, negPhrases, mode="euclidean"):
-    co = cohere.Client("E21STtXiw4cPKhx3a42WLxAllQ9hyT1ZwPtL5qok")
+    f = open(".env", "r")
+    f.readline()
+    co = cohere.Client(f.readline())
     descList = re.split(r"(?<!^)\s*[.\n]+\s*(?!$)", description)
     print(descList)
     descResponse = co.embed(texts=descList)
